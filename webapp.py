@@ -23,19 +23,8 @@ thread_lock = Lock()
 app.secret_key = os.environ['SECRET_KEY'] #used to sign session cookies
 oauth = OAuth(app)
 
-url = 'mongodb://{}:{}@{}:{}/{}'.format(
-    os.environ["MONGO_USERNAME"],
-    os.environ["MONGO_PASSWORD"],
-    os.environ["MONGO_HOST"],
-    os.environ["MONGO_PORT"],
-    os.environ["MONGO_DBNAME"])
-
-client = pymongo.MongoClient(url)
-db = client[os.environ["MONGO_DBNAME"]]
-collection = db["posts"]
-
 #Set up GitHub as OAuth provider
-github = oauth.remote_app(
+"""github = oauth.remote_app(
     'github',
     consumer_key=os.environ['GITHUB_CLIENT_ID'], #your web app's "username" for github's OAuth
     consumer_secret=os.environ['GITHUB_CLIENT_SECRET'],#your dfweb app's "password" for github's OAuth
@@ -45,7 +34,7 @@ github = oauth.remote_app(
     access_token_method='POST',
     access_token_url='https://github.com/login/oauth/access_token',
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
-)
+)"""
 
 #use a JSON file to store the past posts.  A global list variable doesn't work when handling multiple requests coming in and being handled on different threads
 #Create and set a global variable for the name of you JSON file here.  The file will be created on Heroku, so you don't need to make it in GitHub
@@ -79,11 +68,11 @@ def inject_logged_in():
 @app.route('/')
 def home():
     if 'github_token' in session:
-        return render_template('home.html', past_posts=posts_to_html(get_user_location()), async_mode=socketio.async_mode)
+        return render_template('home.html', async_mode=socketio.async_mode)
     else:
         return render_template('home.html', async_mode=socketio.async_mode)
 
-def posts_to_html(user_location):
+"""def posts_to_html(user_location):
     print("User's location: " + user_location)
     if user_location == "no location":
         flash("Set location in your github bio to find people!")
@@ -95,7 +84,7 @@ def posts_to_html(user_location):
         except Exception as e:
             print(e)
     forum_table += Markup("</table>")
-    return forum_table
+    return forum_table"""
 
 #Use this method to delete messages
 # @app.route('/delete', methods=['POST'])
@@ -161,9 +150,9 @@ def authorized():
     return render_template('home.html', past_posts = posts_to_html(get_user_location()))
 
 #the tokengetter is automatically called to check who is logged in.
-@github.tokengetter
+"""@github.tokengetter
 def get_github_oauth_token():
-    return session.get('github_token')
+    return session.get('github_token')"""
 
 def get_user_location():
     location = session['user_data']['location']
