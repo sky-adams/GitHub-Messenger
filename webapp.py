@@ -127,9 +127,9 @@ def authorized():
     return render_template('home.html', past_posts = posts_to_html(get_user_location()))
 
 #the tokengetter is automatically called to check who is logged in.
-@github.tokengetter
+"""@github.tokengetter
 def get_github_oauth_token():
-    return session.get('github_token')
+    return session.get('github_token')"""
 
 def get_user_location():
     location = session['user_data']['location']
